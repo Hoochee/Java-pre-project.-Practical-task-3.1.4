@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log in with your account</title>
+</head>
+<body>
+
+<div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>Age</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Roles</th>
+        </tr>
+        <tr th:each="user, state : ${allUsers}">
+            <td th:utext="${state.count}">id</td>
+            <td th:utext="${user.getFirstName()}">Name</td>
+            <td th:utext="${user.getLastName()}">Surname</td>
+            <td th:utext="${user.getAge()}">Age</td>
+            <td th:utext="${user.getEmail()}">Email</td>
+            <td th:utext="${user.getPassword()}">Password</td>
+            <td>
+                <li th:each="role: ${user.getRoles()}" th:text="${role.getName()}"></li>
+            </td>
+
+            <td>
+                <form th:action="@{'/admin/edit/' + ${user.getId}}">
+                <input type="submit" class="buttonEdit" value="Edit"/>
+            </form>
+            </td>
+            <td>
+                <form th:method="DELETE" th:action="@{'/admin/delete/' + ${user.getId}}">
+                    <input type="submit" class="buttonDelete" value="Delete"/>
+                </form>
+            </td>
+        </tr>
+        </th:each>
+    </table>
+    <a href="/">Главная</a>
+    </br>
+    <input type="button" value="Add"
+           onclick="window.location.href = '/admin/new'"/>
+    <br>
+    <button class="buttonLogout" onclick="window.location.href = '/logout';">Logout</button>
+
+</div>
+
+</body>
+</html>
