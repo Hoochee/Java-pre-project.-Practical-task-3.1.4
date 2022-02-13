@@ -32,6 +32,7 @@ public class User implements UserDetails {
     //@Email
     // @NotEmpty(message = "Please enter an email")
     @Column(name = "email")
+
     public String email;
 
     @Size(min = 2, message = "Не меньше 5 знаков")

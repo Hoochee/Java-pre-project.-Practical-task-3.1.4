@@ -1,14 +1,13 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.services.JpaUserServiceImpl;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 
 @Controller
@@ -18,48 +17,37 @@ public class AdminController {
     private JpaUserServiceImpl userService;
 
     @GetMapping("/admin")
-    public String userList(Model model) {
-        model.addAttribute("allUsers", userService.allUsers());
+    public String showAdminPage(@AuthenticationPrincipal User user, Model model) {
+        model.addAttribute("users", userService.allUsers());
+        model.addAttribute("user", user);
+        model.addAttribute("roles", userService.getAllRoles());
         return "admin";
     }
 
     @DeleteMapping("admin/delete/{id}")
-    public String  deleteUser(@PathVariable("id") long id) {
-
-            userService.deleteUser(id);
-
+    public String deleteUser(@PathVariable("id") long id) {
+        userService.deleteUser(id);
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/edit/{id}")
-    public String edit(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user", userService.findUserById(id));
-        model.addAttribute("listRoles", userService.getAllRoles());
-        return "/edit";
-    }
-
-    @PutMapping("admin/edit")
-    public String pageEdit(@Valid User user, BindingResult bindingResult,
-                           @RequestParam("listRoles") ArrayList<Long>roles) {
-        if (bindingResult.hasErrors()) {
-            return "edit";
-        }
-        userService.updateUser(user,userService.findRoles(roles));
+    @PutMapping("/admin/edit/")
+    public String updateUser(@ModelAttribute("user") User user, Model model, @RequestParam("listRoles") ArrayList<Long> roles) {
+        model.addAttribute("roles", userService.getAllRoles());
+        System.out.println(user.getId());
+        System.out.println(user.getEmail());
+        userService.updateUser(user, userService.findRoles(roles));
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/new")
-    public String newUser(@ModelAttribute("user") User user) {
-        return "/new";
+    @GetMapping("/admin/add")
+    public String newUser(@AuthenticationPrincipal User user, Model model) {
+        model.addAttribute("roles", userService.getAllRoles());
+        return "admin/new";
     }
 
-    @PostMapping("/admin/new")
-    public String addUser(@ModelAttribute("user") User userForm, Model model) {
-
-        if (!userService.saveUser(userForm)){
-            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
-            return "new";
-        }
+    @PostMapping("admin/new")
+    public String addUser(@ModelAttribute("user") User userForm, Model model, @RequestParam("listRoles3") ArrayList<Long> roles) {
+        userService.saveUser(userForm, userService.findRoles(roles));
         return "redirect:/admin";
     }
 }

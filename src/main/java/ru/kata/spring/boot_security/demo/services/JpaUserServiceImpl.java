@@ -48,12 +48,12 @@ public class JpaUserServiceImpl implements UserDetailsService {
     }
 
     @Transactional
-    public boolean saveUser(User user) {
+    public boolean saveUser(User user,Set<Role> roles) {
         User userFromDB = userRepository.findByEmail(user.getEmail());
         if (userFromDB != null) {
             return false;
         }
-        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+        user.setRoles(roles);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
