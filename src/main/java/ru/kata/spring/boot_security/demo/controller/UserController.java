@@ -25,18 +25,10 @@ public class UserController {
         return "/login";
     }
 
-    @GetMapping(value = "user")
+    @GetMapping("user")
     public String showUserInfo(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("user", user);
+        System.out.println(user.getRoles());
         return "/user";
     }
-
-//    @RequestMapping("/login")
-//    public String getLogin(@RequestParam(value = "error", required = false) String error,
-//                           @RequestParam(value = "logout", required = false) String logout,
-//                           Model model) {
-//        model.addAttribute("error", error != null);
-//        model.addAttribute("logout", logout != null);
-//        return "login";
-//    }
 }

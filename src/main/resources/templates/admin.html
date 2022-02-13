@@ -4,11 +4,13 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-
 <head>
+    <link rel="icon" href="https://img.icons8.com/color/48/000000/spring-logo.png"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-          crossorigin="anonymous">
+          crossorigin="anonymous"
+    />
+
     <meta charset="UTF-8">
     <title>Admin Page</title>
 </head>
@@ -32,9 +34,9 @@
         <div class="row">
             <div class="p-0 col-2">
                 <div class="nav flex-column nav-pills pt-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link active" href="/admin"
+                    <a class="nav-link active" href="/admin" sec:authorize="hasRole('ROLE_ADMIN')"
                        aria-controls="v-pills-home" aria-selected="true">Admin</a>
-                    <a class="nav-link" href="/user"
+                    <a class="nav-link" href="/user" sec:authorize="(hasAnyRole('ROLE_USER','ROLE_ADMIN'))"
                        role="tab"
                        aria-controls="v-pills-profile" aria-selected="false">User</a>
                 </div>
@@ -71,6 +73,8 @@
                                             <th>Email</th>
                                             <th>Password</th>
                                             <th>Roles</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
                                         </tr>
                                         <tr th:each="user, state : ${users}">
                                             <td th:utext="${state.count}">id</td>
@@ -92,7 +96,7 @@
                                                    data-target="#deleteModal"
                                                    th:data-target="${'#deleteModal'+user.getId()}">Delete</a>
                                             </td>
-                                            <div class="modal fade" th:id="${'editModal'+user.id}"
+                                            <div class="modal fade" th:id="${'editModal'+user.getId()}"
                                                  th:data-user-id="${user.id}"
                                                  aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered">
@@ -113,27 +117,27 @@
                                                                 <label for="firstname"><b>First Name</b></label>
                                                                 <input th:name="firstName" th:type="text"
                                                                        class="form-control" id="firstname"
-                                                                       th:value="${user.getFirstName()}"/>
+                                                                       th:value="${user.getFirstName()}" maxlength="35" minlength="3"/>
                                                                 <br>
                                                                 <label for="lastname"><b>Last Name</b></label>
                                                                 <input th:name="lastName" th:type="text"
                                                                        class="form-control" id="lastname"
-                                                                       th:value="${user.getLastName()}"/>
+                                                                       th:value="${user.getLastName()}" maxlength="35" minlength="3"/>
                                                                 <br>
                                                                 <label for="age"><b>Age</b></label>
                                                                 <input th:name="age" th:type="number"
                                                                        class="form-control" id="age"
-                                                                       th:value="${user.getAge()}"/>
+                                                                       th:value="${user.getAge()}" min="1" max="200"/>
                                                                 <br>
                                                                 <label for="email"><b>Email</b></label>
-                                                                <input th:name="email" th:type="text"
+                                                                <input th:name="email" type="email"
                                                                        class="form-control" id="email"
                                                                        th:value="${user.getEmail()}"/>
                                                                 <br>
                                                                 <label for="password"><b>Password</b></label>
-                                                                <input th:name="password" type="text"
+                                                                <input th:name="password" th:type="password"
                                                                        class="form-control" id="password"
-                                                                       th:value="${user.getPassword()}"/>
+                                                                       th:value="${user.getPassword()}" required/>
                                                                 <br>
                                                                 <label for="roles"><b>Role</b></label>
                                                                 <select multiple class="form-control form-control-sm"
@@ -199,7 +203,7 @@
                                                                            th:value="${user.getEmail()}" disabled/>
                                                                     <br>
                                                                     <label for="password1"><b>Password</b></label>
-                                                                    <input th:name="password" type="text"
+                                                                    <input th:name="password" th:type="password"
                                                                            class="form-control" id="password1"
                                                                            th:value="${user.getPassword()}" disabled/>
                                                                     <br>
@@ -247,20 +251,20 @@
                                       th:object="${user}"
                                       method="POST">
                                     <label for="firstname3"><b>First Name</b></label>
-                                    <input th:name="firstName" th:type="text" class="form-control" id="firstname3" required/>
+                                    <input th:name="firstName" th:type="text" class="form-control" id="firstname3" maxlength="35" minlength="3" required/>
                                     <br>
                                     <label for="lastname3"><b>Last Name</b></label>
-                                    <input th:name="lastName" th:type="text" class="form-control" id="lastname3"
+                                    <input th:name="lastName" th:type="text" class="form-control" id="lastname3" maxlength="35" minlength="3"
                                            required/>
                                     <br>
                                     <label for="age3"><b>Age</b></label>
-                                    <input th:name="age" th:type="number" class="form-control" id="age3"/>
+                                    <input th:name="age" th:type="number" class="form-control" id="age3" min="1" max="200" />
                                     <br>
                                     <label for="email3"><b>Email</b></label>
-                                    <input th:name="email" th:type="text" class="form-control" id="email3" required/>
+                                    <input th:name="email" type="email" class="form-control" id="email3" required/>
                                     <br>
                                     <label for="password3"><b>Password</b></label>
-                                    <input th:name="password" th:field="*{password}" th:type="password"
+                                    <input th:name="password" th:field="*{password}" th:type="password" required min="1" max="15"
                                            class="form-control"
                                            id="password3"/>
                                     <br>

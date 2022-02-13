@@ -39,12 +39,6 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/add")
-    public String newUser(@AuthenticationPrincipal User user, Model model) {
-        model.addAttribute("roles", userService.getAllRoles());
-        return "admin/new";
-    }
-
     @PostMapping("admin/new")
     public String addUser(@ModelAttribute("user") User userForm, Model model, @RequestParam("listRoles3") ArrayList<Long> roles) {
         userService.saveUser(userForm, userService.findRoles(roles));
