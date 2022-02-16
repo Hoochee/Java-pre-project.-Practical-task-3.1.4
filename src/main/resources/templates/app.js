@@ -21,16 +21,16 @@ const userFetchService = {
     deleteUser: async (id) => await fetch(`api/users/${id}`, {method: 'DELETE', headers: userFetch.head})
 }
 async function getTableWithUsers() {
-    const table = document.querySelector('#TableAllUsers tbody');
+    let table = $('#TableAllUsers tbody');
 
     await userFetchService.findAllUsers()
         .then(res => res.json())
         .then(users => {
-            users.forEach(user => {
+            users.forEach(user1 => {
                 let tableFilling = `$(
                         <tr>
-                            <td>${user.id}</td>
-                            <td>${user.firstName}</td>
+                            <td>${user1.id}</td>
+                            <td>${user1.firstName}</td>
                             <td>${user.lastName.slice(0, 15)}...</td>
                             <td>${user.age}</td> 
                             <td>${user.email}</td>
