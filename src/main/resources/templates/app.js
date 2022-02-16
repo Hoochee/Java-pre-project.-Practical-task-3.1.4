@@ -21,8 +21,7 @@ const userFetchService = {
     deleteUser: async (id) => await fetch(`api/users/${id}`, {method: 'DELETE', headers: userFetch.head})
 }
 async function getTableWithUsers() {
-    let table = $('#allUsersTable tbody');
-    table.empty();
+    const table = document.querySelector('#TableAllUsers tbody');
 
     await userFetchService.findAllUsers()
         .then(res => res.json())
