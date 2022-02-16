@@ -26,11 +26,11 @@ async function getTableWithUsers() {
     await userFetchService.findAllUsers()
         .then(res => res.json())
         .then(users => {
-            users.forEach(user1 => {
+            users.forEach(user => {
                 let tableFilling = `$(
                         <tr>
-                            <td>${user1.id}</td>
-                            <td>${user1.firstName}</td>
+                            <td>${user.id}</td>
+                            <td>${user.firstName}</td>
                             <td>${user.lastName.slice(0, 15)}...</td>
                             <td>${user.age}</td> 
                             <td>${user.email}</td>
