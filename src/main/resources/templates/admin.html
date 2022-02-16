@@ -34,20 +34,20 @@
         <div class="row">
             <div class="p-0 col-2">
                 <div class="nav flex-column nav-pills pt-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link active" href="/admin" sec:authorize="hasRole('ROLE_ADMIN')"
-                       aria-controls="v-pills-home" aria-selected="true">Admin</a>
-                    <a class="nav-link" href="/user" sec:authorize="(hasAnyRole('ROLE_USER','ROLE_ADMIN'))"
+                    <a class="nav-link active" href="#allUsersTable" sec:authorize="hasRole('ROLE_ADMIN') "
+                       aria-controls="v-pills-home" aria-selected="true" id="adminTab">Admin</a>
+                    <a class="nav-link" href="#userTable" sec:authorize="(hasAnyRole('ROLE_USER','ROLE_ADMIN'))"
                        role="tab"
-                       aria-controls="v-pills-profile" aria-selected="false">User</a>
+                       aria-controls="v-pills-profile" aria-selected="false" id="userTab">User</a>
                 </div>
             </div>
             <div class="col-10 px-0">
                 <div class="container-fluid">
                     <h1 class="m-3 fw-bold">Admin panel</h1>
-                    <ul class="nav nav-tabs">
+                    <ul sec:authorize="hasRole('ROLE_ADMIN')" class="nav nav-tabs">
                         <!-- Первая вкладка (активная) -->
                         <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#userTable">Users Table</a>
+                            <a class="nav-link active" data-toggle="tab" href="#allUsersTable" >Users Table</a>
                         </li>
                         <!-- Вторая вкладка -->
                         <li class="nav-item">
@@ -56,7 +56,7 @@
                     </ul>
                     <div class="tab-content">
                         <!-- Первая вкладка (активная) User Table -->
-                        <div class="tab-pane fade show active" id="userTable">
+                        <div class="tab-pane fade show active" id="allUsersTable">
                             <div class="card">
                                 <div class="card-header">
                                     <div class="m-1">

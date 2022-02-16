@@ -52,12 +52,24 @@ public class JpaUserServiceImpl implements UserDetailsService {
         User userFromDB = userRepository.findByEmail(user.getEmail());
         if (userFromDB != null) {
             return false;
+        } else {
+            user.setRoles(roles);
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+            return true;
         }
-        user.setRoles(roles);
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return true;
     }
+    //переделать на стандартный jpa
+    @Transactional
+    public void saveUser(User user) {
+        User userFromDB = userRepository.findByEmail(user.getEmail());
+        if (userFromDB != null) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+        }
+    }
+
+
 
     @Transactional
     public void deleteUser(Long userId) {
