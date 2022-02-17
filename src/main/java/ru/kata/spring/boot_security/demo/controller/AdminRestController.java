@@ -28,6 +28,7 @@ public class AdminRestController {
 
     @PostMapping("admin/users")
     public ResponseEntity<User> addNewUser(@RequestBody User user){
+        System.out.println("!!!!!!");
         userService.saveUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }

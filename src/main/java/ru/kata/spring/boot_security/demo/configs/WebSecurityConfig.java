@@ -46,7 +46,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/login").anonymous()
-                .antMatchers("/api/admin/**").access("hasAnyAuthority('ROLE_ADMIN')")
+                //.antMatchers("/api/admin/**").access("hasAnyAuthority('ROLE_ADMIN')")
+                .antMatchers("/**").access("hasAnyAuthority('ROLE_ADMIN')")
                 .antMatchers("/api/user/**").access("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
                 .anyRequest().authenticated();
     }

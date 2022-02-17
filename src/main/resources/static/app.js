@@ -4,6 +4,12 @@ $(async function () {
     getDefaultModal();
     addNewUser();
 })
+let roleList = [
+    {id: 1, role: "ROLE_USER"},
+    {id: 2, role: "ROLE_ADMIN"}
+]
+
+console.log('привет')
 
 
 const userFetchService = {
@@ -16,7 +22,7 @@ const userFetchService = {
     findAllUsers: async () => await fetch('api/admin/users'),
     findUserByUsername: async () => await fetch(`api/user`),
     findOneUser: async (id) => await fetch(`api/users/${id}`),
-    addNewUser: async (user) => await fetch('api/users', {method: 'POST', headers: userFetch.head, body: JSON.stringify(user)}),
+    addNewUser: async (user) => await fetch('api/admin/users', {method: 'POST', headers: userFetchService.head, body: JSON.stringify(user)}),
     updateUser: async (user, id) => await fetch(`api/users/${id}`, {method: 'PUT', headers: userFetch.head, body: JSON.stringify(user)}),
     deleteUser: async (id) => await fetch(`api/users/${id}`, {method: 'DELETE', headers: userFetch.head})
 }
@@ -34,8 +40,7 @@ async function getTableWithUsers() {
                             <td>${user.lastName.slice(0, 15)}...</td>
                             <td>${user.age}</td> 
                             <td>${user.email}</td>
-                            <td>${user.password}</td>
-                            <td>${user.roles}</td>   
+                            <td>${user.roles.map(e => " " + e.name)}</td>   
                             <td>
                                 <button type="button" data-userid="${user.id}" data-action="edit" class="btn btn-outline-secondary" 
                                 data-toggle="modal" data-target="#someDefaultModal"></button>
@@ -81,3 +86,79 @@ async function getNewUserForm() {
         }
     })
 }
+
+async function addNewUser() {
+
+    $('#addUser1').click(async () =>  {
+        console.log("!!!!!")
+        let addUserForm = $('#newUser')
+        let firstName = addUserForm.find('#addFirstName').val().trim();
+        let lastName = addUserForm.find('#addLastName').val().trim();
+        let age = addUserForm.find('#addAge').val().trim();
+        let email = addUserForm.find('#addEmail').val().trim();
+        let password = addUserForm.find('#addPassword').val().trim();
+        let checkedRoles = () => {
+            let array = []
+            let options = document.querySelector('#rolesCreate').options
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].selected) {
+                    array.push(roleList[i])
+                }
+            }
+            return array;
+        }
+        let data = {
+            firstName: firstName,
+            lastName: lastName,
+            age: age,
+            email: email,
+            password: password,
+            roles: checkedRoles()
+        }
+        const response = await userFetchService.addNewUser(data);
+        if (response.ok) {
+            await getTableWithUsers();
+            addUserForm.find('#addFirstName').val('');
+            addUserForm.find('#addLastName').val('');
+            addUserForm.find('#addAge').val('');
+            addUserForm.find('#addEmail').val('');
+            addUserForm.find('#addPassword').val('');
+            addUserForm.find(checkedRoles()).val('');
+        } else {
+            let body = await response.json();
+            let alert = `<div class="alert alert-danger alert-dismissible fade show col-12" role="alert" id="sharaBaraMessageError">
+                            ${body.info}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>`;
+            addUserForm.prepend(alert)
+        }
+    })
+
+
+
+}
+
+async function addTestUser() {
+
+    $('#addTestUser').click(async () =>  {
+        console.log("!!!!!")
+
+        let firstName = "Pavel";
+        let lastName = "Ivanov";
+        let age = 10;
+        let email = "1@1.ru";
+        let password = 1;
+        let roles = roleList;
+
+        let data = {
+            firstName: firstName,
+            lastName: lastName,
+            age: age,
+            email: email,
+            roles: roles
+        }
+        await userFetchService.addNewUser(data);
+
+    })}

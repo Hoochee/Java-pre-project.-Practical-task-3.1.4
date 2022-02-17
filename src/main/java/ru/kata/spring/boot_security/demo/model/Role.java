@@ -48,7 +48,7 @@ public class Role implements GrantedAuthority {
     public void setUsers(Set<User> users) {
         this.users = users;
     }
-
+    @JsonIgnore
     @Override
     public String getAuthority() {
         return getName();
