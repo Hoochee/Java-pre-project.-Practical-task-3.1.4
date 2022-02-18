@@ -119,7 +119,6 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
     }
-    @JsonIgnore
     @Override
     public String getPassword() {
         return password;

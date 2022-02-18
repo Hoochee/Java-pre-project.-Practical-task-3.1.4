@@ -1,9 +1,10 @@
 $(async function () {
     await getTableWithUsers();
-    getNewUserForm();
-    getDefaultModal();
-    addNewUser();
+    await getNewUserForm();
+   // getDefaultModal();
+    await addNewUser();
 })
+let isUser = true;
 let roleList = [
     {id: 1, role: "ROLE_USER"},
     {id: 2, role: "ROLE_ADMIN"}
@@ -27,13 +28,14 @@ const userFetchService = {
     deleteUser: async (id) => await fetch(`api/users/${id}`, {method: 'DELETE', headers: userFetch.head})
 }
 async function getTableWithUsers() {
-    let table = $('#TableAllUsers tbody');
+    const table = document.querySelector('#TableAllUsers tbody');
+    let temp = '';
 
     await userFetchService.findAllUsers()
         .then(res => res.json())
         .then(users => {
             users.forEach(user => {
-                let tableFilling = `$(
+                temp += `
                         <tr>
                             <td>${user.id}</td>
                             <td>${user.firstName}</td>
@@ -50,8 +52,8 @@ async function getTableWithUsers() {
                                 data-toggle="modal" data-target="#someDefaultModal"></button>
                             </td>
                         </tr>
-                )`;
-                table.append(tableFilling);
+                `;
+                table.innerHTML = temp;
             })
         })
 
@@ -88,10 +90,10 @@ async function getNewUserForm() {
 }
 
 async function addNewUser() {
-
+    console.log("!!!!!")
     $('#addUser1').click(async () =>  {
         console.log("!!!!!")
-        let addUserForm = $('#newUser')
+        let addUserForm = $('#newUser1')
         let firstName = addUserForm.find('#addFirstName').val().trim();
         let lastName = addUserForm.find('#addLastName').val().trim();
         let age = addUserForm.find('#addAge').val().trim();
@@ -99,7 +101,7 @@ async function addNewUser() {
         let password = addUserForm.find('#addPassword').val().trim();
         let checkedRoles = () => {
             let array = []
-            let options = document.querySelector('#rolesCreate').options
+            let options = document.querySelector('#addRoles').options
             for (let i = 0; i < options.length; i++) {
                 if (options[i].selected) {
                     array.push(roleList[i])
@@ -124,6 +126,13 @@ async function addNewUser() {
             addUserForm.find('#addEmail').val('');
             addUserForm.find('#addPassword').val('');
             addUserForm.find(checkedRoles()).val('');
+            let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert" id="successMessage">
+                         User create successful!
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>`;
+            $('.nav-tabs a[href="#allUsersTable"]').tab('show');
         } else {
             let body = await response.json();
             let alert = `<div class="alert alert-danger alert-dismissible fade show col-12" role="alert" id="sharaBaraMessageError">
@@ -141,6 +150,7 @@ async function addNewUser() {
 }
 
 async function addTestUser() {
+    console.log("!!!!!")
 
     $('#addTestUser').click(async () =>  {
         console.log("!!!!!")
@@ -162,3 +172,40 @@ async function addTestUser() {
         await userFetchService.addNewUser(data);
 
     })}
+
+async function getUser() {
+    let temp = '';
+    const table = document.querySelector('#tableUser tbody');
+    await userFetchService.findUserByUsername()
+        .then(res => res.json())
+        .then(user => {
+            temp = `
+                <tr>
+                   <td>${user.id}</td>
+                            <td>${user.firstName}</td>
+                            <td>${user.lastName.slice(0, 15)}...</td>
+                            <td>${user.age}</td> 
+                            <td>${user.email}</td>
+                            <td>${user.roles.map(e => " " + e.name)}</td> 
+                </tr>
+            `;
+            table.innerHTML = temp;
+
+            $(function (){
+                let role = ""
+                for (let i = 0; i < user.roles.length; i++) {
+                    role = user.roles[i].role
+                    if (role === "ROLE_ADMIN") {
+                        isUser = false;
+                    }
+                }
+                if (isUser) {
+                    $("#userTable").addClass("show active");
+                    $("#userTab").addClass("show active");
+                } else {
+                    $("#allUsersTable").addClass("show active");
+                    $("#adminTab").addClass("show active");
+                }
+            })
+        })
+}

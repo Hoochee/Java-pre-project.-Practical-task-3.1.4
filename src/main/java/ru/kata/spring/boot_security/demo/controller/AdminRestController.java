@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.services.JpaUserServiceImpl;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -44,6 +45,12 @@ public class AdminRestController {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+//    @GetMapping("/user")
+//    public ResponseEntity<User> getUserByUsername (Principal principal) {
+//        User user = userService.findByEmail(principal.getName());
+//        return new ResponseEntity<>(user,HttpStatus.OK);
+//    }
 
 
 }

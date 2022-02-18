@@ -62,11 +62,20 @@ public class JpaUserServiceImpl implements UserDetailsService {
     //переделать на стандартный jpa
     @Transactional
     public void saveUser(User user) {
-        User userFromDB = userRepository.findByEmail(user.getEmail());
-        if (userFromDB != null) {
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+//        User userFromDB = userRepository.findByEmail(user.getEmail());
+//        if (userFromDB != null) {
+//            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+//            userRepository.save(user);
+//            System.out.println("User is create");
+//        }
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             userRepository.save(user);
-        }
+            System.out.println("User is create");
+
+    }
+    @Transactional
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
 
@@ -95,4 +104,6 @@ public class JpaUserServiceImpl implements UserDetailsService {
     public List<Role> getAllRoles() {
         return em.createQuery("select r from Role r").getResultList();
     }
+
+
 }
