@@ -29,7 +29,6 @@ public class AdminRestController {
 
     @PostMapping("admin/users")
     public ResponseEntity<User> addNewUser(@RequestBody User user){
-        System.out.println("!!!!!!");
         userService.saveUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -45,12 +44,4 @@ public class AdminRestController {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-//    @GetMapping("/user")
-//    public ResponseEntity<User> getUserByUsername (Principal principal) {
-//        User user = userService.findByEmail(principal.getName());
-//        return new ResponseEntity<>(user,HttpStatus.OK);
-//    }
-
-
 }

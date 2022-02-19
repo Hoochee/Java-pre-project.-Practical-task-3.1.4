@@ -1,12 +1,21 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="EN">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="EN">
 <head>
     <meta charset="UTF-8"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="../static/app1.js" th:src="@{/app1.js}" ></script>
+    <link rel="icon" href="https://img.icons8.com/color/48/000000/spring-logo.png"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+            integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="../static/app1.js" th:src="@{/app1.js}"></script>
     <title>Users</title>
     <meta name="theme-color" content="#7952b3">
     <style>
@@ -17,13 +26,14 @@
             padding-right: 10px;
         }
 
-        .list-group-item{
+        .list-group-item {
             text-align: left;
         }
 
-        .list-group{
+        .list-group {
             padding-top: 20px;
         }
+
         .form-control {
             max-width: 300px;
             max-height: 40px;
@@ -32,10 +42,12 @@
             margin-right: auto;
             margin-left: auto;
         }
-        #newUser{
+
+        #newUser {
             font-weight: bold;
         }
-        .select{
+
+        .select {
             max-height: 100px;
         }
     </style>
@@ -60,16 +72,17 @@
             <div class="col-2">
                 <ul class="list-group list-group-flush">
                     <li>
-                        <a sec:authorize="hasRole('ROLE_ADMIN')"  class="list-group-item" id="adminTab"
+                        <a sec:authorize="hasRole('ROLE_ADMIN')" class="list-group-item" id="adminTab"
                            href="#adminTable" data-toggle="tab">Admin</a>
                     </li>
                     <li>
-                        <a class="list-group-item" id="userTab"
+                        <a sec:authorize="(hasAnyRole('ROLE_USER','ROLE_ADMIN'))" class="list-group-item" id="userTab"
                            href="#userTable" data-toggle="tab">User</a>
                     </li>
                 </ul>
             </div>
             <div class="col-10">
+
                 <h1 className="h1 a1" id="h1a1"></h1>
                 <div class="tabs">
                     <ul sec:authorize="hasRole('ROLE_ADMIN')" class="nav nav-tabs">
@@ -90,12 +103,12 @@
                             <table class="table table-striped" id="tableAllUsers">
                                 <thead>
                                 <tr>
-                                    <th>UserId</th>
-                                    <th>Name</th>
-                                    <th>Surname</th>
+                                    <th>Id</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
                                     <th>Age</th>
                                     <th>Email</th>
-                                    <th>Role</th>
+                                    <th>Roles</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
                                 </tr>
@@ -110,15 +123,15 @@
                             <div class="navbar-brand">About user</div>
                         </nav>
                         <div>
-                            <table class="table table-striped" id="tableUser" >
+                            <table class="table table-striped" id="tableUser">
                                 <thead>
                                 <tr>
-                                    <th>UserId</th>
-                                    <th>Name</th>
-                                    <th>Surname</th>
+                                    <th>Id</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
                                     <th>Age</th>
                                     <th>Email</th>
-                                    <th>Role</th>
+                                    <th>Roles</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -135,35 +148,35 @@
                         <form id="addForm">
 
                             <div class="form-group">
-                                <label for="passwordCreate" class="com-form-label">Password</label>
-                                <input type="password" class="form-control" id="passwordCreate">
+                                <label for="addFirstName" class="com-form-label">First Name</label>
+                                <input type="text" class="form-control" id="addFirstName">
                             </div>
 
                             <div class="form-group">
-                                <label for="nameCreate" class="com-form-label">Name</label>
-                                <input type="text" class="form-control" id="nameCreate">
+                                <label for="addLastName" class="com-form-label">Last Name</label>
+                                <input type="text" class="form-control" id="addLastName">
                             </div>
 
                             <div class="form-group">
-                                <label for="surnameCreate" class="com-form-label">Surname</label>
-                                <input type="text" class="form-control" id="surnameCreate">
+                                <label for="addAge" class="com-form-label">Age</label>
+                                <input type="number" class="form-control" id="addAge">
                             </div>
 
                             <div class="form-group">
-                                <label for="ageCreate" class="com-form-label">Age</label>
-                                <input type="number" class="form-control" id="ageCreate">
+                                <label for="addEmail" class="com-form-label">Email</label>
+                                <input type="text" class="form-control" id="addEmail">
                             </div>
 
                             <div class="form-group">
-                                <label for="emailCreate" class="com-form-label">Email</label>
-                                <input type="text" class="form-control" id="emailCreate">
+                                <label for="addPassword" class="com-form-label">Password</label>
+                                <input type="password" class="form-control" id="addPassword" required>
                             </div>
 
                             <div class="form-group">
-                                <label for="rolesCreate" class="com-form-label">Role:</label>
-                                <select multiple id="rolesCreate" class="form-control select" size="2">
-                                    <option value="ROLE_USER">USER</option>
-                                    <option value="ROLE_ADMIN">ADMIN</option>
+                                <label for="addRoles" class="com-form-label">Role:</label>
+                                <select multiple id="addRoles" class="form-control select" size="2">
+                                    <option value="2">USER</option>
+                                    <option value="1">ADMIN</option>
                                 </select>
                             </div>
                         </form>
@@ -175,7 +188,8 @@
             </div>
         </div>
 
-        <div class="modal fade" id="defaultModal" tabindex="-1" role="dialog" aria-labelledby="someDefaultModalLabel" aria-hidden="true">
+        <div class="modal fade" id="defaultModal" tabindex="-1" role="dialog" aria-labelledby="someDefaultModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
 

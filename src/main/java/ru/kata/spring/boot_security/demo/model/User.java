@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -44,6 +45,12 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
+    @Transient
+    private List<Long> rolesIds;
+
+
+
+
     public User(long id, String firstName, String lastName, int age, String email) {
         this.id = id;
         this.firstName = firstName;
@@ -52,7 +59,12 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+
     public User() {
+    }
+
+    public List<Long> getRolesIds() {
+        return rolesIds;
     }
 
     public void setPassword(String password) {

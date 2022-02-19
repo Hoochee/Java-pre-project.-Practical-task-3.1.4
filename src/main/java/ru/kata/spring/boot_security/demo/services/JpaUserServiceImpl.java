@@ -48,7 +48,7 @@ public class JpaUserServiceImpl implements UserDetailsService {
     }
 
     @Transactional
-    public boolean saveUser(User user,Set<Role> roles) {
+    public boolean saveUser(User user, Set<Role> roles) {
         User userFromDB = userRepository.findByEmail(user.getEmail());
         if (userFromDB != null) {
             return false;
@@ -59,25 +59,19 @@ public class JpaUserServiceImpl implements UserDetailsService {
             return true;
         }
     }
-    //переделать на стандартный jpa
+
     @Transactional
     public void saveUser(User user) {
-//        User userFromDB = userRepository.findByEmail(user.getEmail());
-//        if (userFromDB != null) {
-//            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-//            userRepository.save(user);
-//            System.out.println("User is create");
-//        }
+        Set<Role> roles = findRoles(user.getRolesIds());
+        user.setRoles(roles);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            userRepository.save(user);
-            System.out.println("User is create");
-
+        userRepository.save(user);
     }
+
     @Transactional
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
 
 
     @Transactional
@@ -88,8 +82,10 @@ public class JpaUserServiceImpl implements UserDetailsService {
     }
 
     @Transactional
-    public void updateUser(User user, Set<Role> roles) {
+    public void updateUser(User user) {
+        Set<Role> roles = findRoles(user.getRolesIds());
         user.setRoles(roles);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         em.merge(user);
     }
 
@@ -99,11 +95,5 @@ public class JpaUserServiceImpl implements UserDetailsService {
         q.setParameter("role", roles);
         return new HashSet<>(q.getResultList());
     }
-
-    @Transactional(readOnly = true)
-    public List<Role> getAllRoles() {
-        return em.createQuery("select r from Role r").getResultList();
-    }
-
 
 }

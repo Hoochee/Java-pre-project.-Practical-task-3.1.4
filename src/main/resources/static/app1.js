@@ -1,8 +1,4 @@
-let roleList = [
-    {id: 1, role: "ROLE_USER"},
-    {id: 2, role: "ROLE_ADMIN"}
-]
-let isUser = true;
+let isAdmin = true;
 
 $(async function () {
     await getUser();
@@ -24,8 +20,16 @@ const userFetch = {
     findAllUsers: async () => await fetch('api/admin/users'),
     findUserByUsername: async () => await fetch(`api/user`),
     findOneUser: async (id) => await fetch(`api/admin/users/${id}`),
-    addNewUser: async (user) => await fetch('api/admin/users', {method: 'POST', headers: userFetch.head, body: JSON.stringify(user)}),
-    updateUser: async (user, id) => await fetch(`api/admin/users`, {method: 'PUT', headers: userFetch.head, body: JSON.stringify(user)}),
+    addNewUser: async (user) => await fetch('api/admin/users', {
+        method: 'POST',
+        headers: userFetch.head,
+        body: JSON.stringify(user)
+    }),
+    updateUser: async (user) => await fetch(`api/admin/users`, {
+        method: 'PUT',
+        headers: userFetch.head,
+        body: JSON.stringify(user)
+    }),
     deleteUser: async (id) => await fetch(`api/admin/users/${id}`, {method: 'DELETE', headers: userFetch.head})
 }
 
@@ -37,7 +41,7 @@ async function infoUser() {
         .then(user => {
             temp += `
              <span style="color: white">
-               ${user.email} with roles <span>${user.roles.map(e => " " + e.role)}</span>
+               ${user.email} with roles <span>${user.roles.map(e => " " + e.name)}</span>
                 </div>
             </span>
                 </tr>
@@ -59,20 +63,20 @@ async function getUser() {
                     <td>${user.lastName}</td>
                     <td>${user.age}</td>
                     <td>${user.email}</td>
-                    <td>${user.roles.map(e => " " + e.role)}</td>
+                    <td>${user.roles.map(e => " " + e.name)}</td>
                 </tr>
             `;
             table.innerHTML = temp;
 
-            $(function (){
+            $(function () {
                 let role = ""
                 for (let i = 0; i < user.roles.length; i++) {
-                    role = user.roles[i].role
+                    role = user.roles[i].name
                     if (role === "ROLE_ADMIN") {
-                        isUser = false;
+                        isAdmin = false;
                     }
                 }
-                if (isUser) {
+                if (isAdmin) {
                     $("#userTable").addClass("show active");
                     $("#userTab").addClass("show active");
                 } else {
@@ -86,14 +90,14 @@ async function getUser() {
 async function tittle() {
     let temp = ''
     const h1a1 = document.querySelector('#h1a1');
-    if (isUser) {
+    if (isAdmin) {
         temp = `
-            <h1 className="h1 a1" id="h1a1">User information page</h1>
+            <h1 class="h1 a1" id="h1a1">User information page</h1>
             `;
         h1a1.innerHTML = temp;
     } else {
         temp = `
-            <h1 className="h1 a1" id="h1a1">Admin panel</h1>
+            <h1 class="h1 a1" id="h1a1">Admin panel</h1>
             `;
         h1a1.innerHTML = temp;
     }
@@ -113,7 +117,7 @@ async function getUsers() {
                     <td>${user.lastName}</td>
                     <td>${user.age}</td>
                     <td>${user.email}</td>
-                    <td>${user.roles.map(e => " " + e.role)}</td>
+                    <td>${user.roles.map(e => " " + e.name)}</td>
                     <td>
                         <button type="button" data-userid="${user.id}" data-action="edit" class="btn btn-info"
                             className data-toggle="modal" data-target="#editModal">Edit</button>
@@ -140,6 +144,7 @@ async function getUsers() {
         defaultModal.attr('data-action', buttonAction);
         defaultModal.modal('show');
     })
+
 }
 
 async function getNewUserForm() {
@@ -186,80 +191,68 @@ async function editUser(modal, id) {
     modal.find('.modal-footer').append(editButton);
     modal.find('.modal-footer').append(closeButton);
 
+
     user.then(user => {
         let bodyForm = `
             <form class="form-group text-center" id="editUser">
                <div class="form-group">
-                    <label for="userId" class="col-form-label">ID</label>
-                    <input type="text" class="form-control username" id="userId" value="${user.id}" readonly>
+                    <label for="editId" class="col-form-label">ID</label>
+                    <input type="text" class="form-control username" id="editId" value="${user.id}" readonly>
                </div>
-                   
-             
-d
+
                 <div class="form-group">
-                    <label for="password" class="com-form-label">Password</label>
-                    <input type="password" class="form-control" id="password" value="${user.password}">
+                    <label for="editFirstName" class="com-form-label">First Name</label>
+                    <input type="text" class="form-control" id="editFirstName" value="${user.firstName}">
                 </div>
 
                 <div class="form-group">
-                    <label for="name" class="com-form-label">Name</label>
-                    <input type="text" class="form-control" id="name" value="${user.firstName}">
+                    <label for="editLastName" class="com-form-label">Last Name</label>
+                    <input type="text" class="form-control" id="editLastName" value="${user.lastName}">
                 </div>
 
                 <div class="form-group">
-                    <label for="surname" class="com-form-label">Surname</label>
-                    <input type="text" class="form-control" id="surname" value="${user.lastName}">
+                    <label for="editAge" class="com-form-label">Age</label>
+                    <input type="number" class="form-control" id="editAge" value="${user.age}">
                 </div>
 
                 <div class="form-group">
-                    <label for="age" class="com-form-label">Age</label>
-                    <input type="number" class="form-control" id="age" value="${user.age}">
+                    <label for="editEmail" class="com-form-label">Email</label>
+                    <input type="text" class="form-control" id="editEmail" value="${user.email}">
                 </div>
-
-                <div class="form-group">
-                    <label for="email" class="com-form-label">Email</label>
-                    <input type="text" class="form-control" id="email" value="${user.email}">
+                 <div class="form-group">
+                    <label for="editPassword" class="com-form-label">Password</label>
+                    <input type="password" class="form-control" id="editPassword" value="" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="roles" class="com-form-label">Role</label>
-                    <select multiple id="roles" size="2" class="form-control" style="max-height: 100px">
-                    <option value="ROLE_USER">USER</option>
-                    <option value="ROLE_ADMIN">ADMIN</option>
+                    <label for="editRoles" class="com-form-label">Role</label>
+                    <select multiple id="editRoles" size="2" class="form-control" style="max-height: 100px">
+                    <option value="2">USER</option>
+                    <option value="1">ADMIN</option>
                     </select>
                 </div>
             </form>
         `;
+
         modal.find('.modal-body').append(bodyForm);
     })
 
     $("#editButton").on('click', async () => {
-        let checkedRoles = () => {
-            let array = []
-            let options = document.querySelector('#roles').options
-            for (let i = 0; i < options.length; i++) {
-                if (options[i].selected) {
-                    array.push(roleList[i])
-                }
-            }
-            return array;
-        }
-        let userId = modal.find("#userId").val().trim();
-
-        let password = modal.find("#password").val().trim();
-        let name = modal.find("#name").val().trim();
-        let surname = modal.find("#surname").val().trim();
-        let age = modal.find("#age").val().trim();
-        let email = modal.find("#email").val().trim();
+        let id = modal.find("#editId").val().trim();
+        let firstName = modal.find("#editFirstName").val().trim();
+        let lastName = modal.find("#editLastName").val().trim();
+        let age = modal.find("#editAge").val().trim();
+        let email = modal.find("#editEmail").val().trim();
+        let password = modal.find("#editPassword").val().trim();
+        let array = $('#editRoles').val();
         let data = {
-            id: userId,
-            firstName: name,
-            lastName: surname,
+            id: id,
+            firstName: firstName,
+            lastName: lastName,
             age: age,
             email: email,
             password: password,
-            roles: checkedRoles()
-
+            rolesIds: array
         }
         const response = await userFetch.updateUser(data, id);
 
@@ -282,7 +275,6 @@ d
 async function deleteUser(modal, id) {
     let oneUser = await userFetch.findOneUser(id);
     let user = oneUser.json();
-
     modal.find('.modal-title').html('Delete user');
 
     let deleteButton = `<button  class="btn btn-danger" id="deleteButton">Delete</button>`;
@@ -294,20 +286,18 @@ async function deleteUser(modal, id) {
         let bodyForm = `
             <form class="form-group text-center" id="deleteUser">
                <div class="form-group">
-                    <label for="userId" class="col-form-label">ID</label>
-                    <input type="text" class="form-control username" id="userId" value="${user.id}" readonly>
+                    <label for="id" class="col-form-label">ID</label>
+                    <input type="text" class="form-control username" id="id" value="${user.id}" readonly>
                </div>
-                   
-              
 
                 <div class="form-group">
-                    <label for="name" class="com-form-label">Name</label>
-                    <input type="text" class="form-control" id="name" value="${user.firstName}" readonly>
+                    <label for="firstName" class="com-form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" value="${user.firstName}" readonly>
                 </div>
 
                 <div class="form-group">
-                    <label for="surname" class="com-form-label">Surname</label>
-                    <input type="text" class="form-control" id="surname" value="${user.lastName}" readonly>
+                    <label for="lastName" class="com-form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" value="${user.lastName}" readonly>
                 </div>
 
                 <div class="form-group">
@@ -326,11 +316,10 @@ async function deleteUser(modal, id) {
                  <div class="form-group">
                 <label for="roles" class="com-form-label">Role:</label>
                 <select id="roles" class="form-control select" size="2" name="roles" style="max-height: 100px" disabled>
-                <option>${user.roles.map(role => " " + role.role)}</option>
+                <option>${user.roles.map(role => " " + role.name)}</option>
             })}</option>
                 </select>
             </div>
-
             </form>
         `;
         modal.find('.modal-body').append(bodyForm);
@@ -356,48 +345,25 @@ async function deleteUser(modal, id) {
 }
 
 async function createUser() {
-    $('#addUser').click(async () =>  {
+    $('#addUser').click(async () => {
         let addUserForm = $('#addForm')
-        let password = addUserForm.find('#passwordCreate').val().trim();
-        let name = addUserForm.find('#nameCreate').val().trim();
-        let surname = addUserForm.find('#surnameCreate').val().trim();
-        let age = addUserForm.find('#ageCreate').val().trim();
-        let email = addUserForm.find('#emailCreate').val().trim();
-        let checkedRoles = () => {
-            let array = []
-            let options = document.querySelector('#rolesCreate').options
-            for (let i = 0; i < options.length; i++) {
-                if (options[i].selected) {
-                    array.push(roleList[i])
-                }
-            }
-            return array;
-        }
+        let firstName = addUserForm.find('#addFirstName').val().trim();
+        let lastName = addUserForm.find('#addLastName').val().trim();
+        let age = addUserForm.find('#addAge').val().trim();
+        let email = addUserForm.find('#addEmail').val().trim();
+        let password = addUserForm.find('#addPassword').val().trim();
+        let array = $('#addRoles').val();
         let data = {
-            firstName: name,
-            lastName: surname,
+            firstName: firstName,
+            lastName: lastName,
             age: age,
             email: email,
             password: password,
-            roles: checkedRoles()
+            rolesIds: array
         }
-
         const response = await userFetch.addNewUser(data);
         if (response.ok) {
             await getUsers();
-            addUserForm.find('#passwordCreate').val('');
-            addUserForm.find('#nameCreate').val('');
-            addUserForm.find('#surnameCreate').val('');
-            addUserForm.find('#ageCreate').val('');
-            addUserForm.find('#emailCreate').val('');
-            addUserForm.find(checkedRoles()).val('');
-            let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert" id="successMessage">
-                         User create successful!
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>`;
-            addUserForm.prepend(alert);
             $('.nav-tabs a[href="#adminTable"]').tab('show');
         } else {
             let body = await response.json();
@@ -409,5 +375,6 @@ async function createUser() {
                         </div>`;
             addUserForm.prepend(alert);
         }
+        addUserForm[0].reset();
     });
 }
